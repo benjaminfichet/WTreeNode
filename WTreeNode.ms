@@ -27,24 +27,24 @@ struct 	WTreeNode (
   -- The treenode's parent .net node (Forms.TreeNode or Forms.TreeView)
   parent,
 
-  -- Variable: _node
+  -- Variable: tnode
   -- The actual Forms.TreeNode
-  _node,
+  tnode,
 
-  -- Variable: _index
+  -- Variable: nindex
   -- The node index
-  _index=-1,
+  nindex=-1,
 
   -- Function: add
-  -- Adds this node to the parent .Nodes array by calling parent.Nodes.Add(this._node)
+  -- Adds this node to the parent .Nodes array by calling parent.Nodes.Add(this.tnode)
   fn add = (
-    _index = parent.Nodes.Add(_node)
+    nindex = parent.Nodes.Add(tnode)
   ),
 
   -- Function: remove
-  -- Removes this node from the parent .Nodes array by calling parent.Nodes.RemoveAt(this._index)
+  -- Removes this node from the parent .Nodes array by calling parent.Nodes.RemoveAt(this.nindex)
   fn remove = (
-    parent.Nodes.RemoveAt(_index)
+    parent.Nodes.RemoveAt(nindex)
   ),
 
   -- Function: processSubs
@@ -52,20 +52,79 @@ struct 	WTreeNode (
   fn processSubs = (
     for i=1 to subNodes.count do (
       snode = subNodes[i]
-      snode.parent = this._node
+      snode.parent = this.tnode
       snode.init()
       snode.add()
     )
   ),
 
+
+  fn setText t = (
+    this.title = t
+    this.tnode.text = this.title
+  ),
+
+
   -- Function: init
   -- Inits this treeview object, passing this WTreeNode as the .tag. Processes subs automaticaly.
   fn init = (
-    _node = dotnetobject "System.Windows.Forms.TreeNode" title
-    _node.tag = dotNetMXSValue this
+    tnode = dotnetobject "System.Windows.Forms.TreeNode" title
+    tnode.tag = dotNetMXSValue this
 
-    dotNet.setLifetimeControl _node #dotNet
+    dotNet.setLifetimeControl tnode #dotNet
     processSubs()
   )
 
 )
+
+
+
+
+
+
+-- Define a simple rollout
+try(DestroyDialog SimpleRollout)catch()
+rollout SimpleRollout "SimpleRollout" height:200 width:350 (
+
+  -- Define a TreeView named tv as the only ui element of this rollout
+  dotnetcontrol tv "System.Windows.Forms.TreeView" height:200
+
+  -- Add a tree struct on rollout open 
+  on SimpleRollout open do (
+      local t1 = WTreeNode title:"OnOpen node" parent:tv subnodes:#(
+          (WTreeNode title:"Im a subnode" subNodes:#()),
+          (WTreeNode title:"Im another!" subNodes:#())
+        )
+
+      t1.init() -- recursive inits the tree nodes
+      t1.add()  -- recursive appends them to the ui
+  )
+)
+
+-- Create the rollout
+createdialog SimpleRollout
+
+
+
+
+
+-- Add a tree struct outside of the rollout
+   t2 = WTreeNode title:"Exterior node" parent:SimpleRollout.tv \
+      subNodes:#(
+        (WTreeNode title:"Sub exterior"), 
+        (WTreeNode title:"Sub exterior 2" subNodes:#(
+                (WTreeNode title:"Subsub exterior!")
+            )
+        )
+      )
+
+  t2.init()
+  t2.add()
+
+
+  t2.setText "TestText"
+
+
+newNode = WTreeNode title:"Exterior node" parent:t2.subNodes[1].tnode
+newNode.init()
+newNode.add()

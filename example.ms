@@ -32,8 +32,7 @@ createdialog SimpleRollout
 
 
 -- Add a tree struct outside of the rollout
-(
-	local t2 = WTreeNode title:"Exterior node" parent:SimpleRollout.tv \
+	 t2 = WTreeNode title:"Exterior node" parent:SimpleRollout.tv \
 	  	subNodes:#(
 	  		(WTreeNode title:"Sub exterior"), 
 	  		(WTreeNode title:"Sub exterior 2" subNodes:#(
@@ -44,4 +43,3 @@ createdialog SimpleRollout
 
 	t2.init()
 	t2.add()
-)
