@@ -38,13 +38,13 @@ struct 	WTreeNode (
   -- Function: add
   -- Adds this node to the parent .Nodes array by calling parent.Nodes.Add(this.tnode)
   fn add = (
-    nindex = parent.Nodes.Add(tnode)
+    if classof(this.parent) == WTreeNode then (nindex = parent.tnode.Nodes.Add(this.tnode)) else (nindex = parent.Nodes.Add(this.tnode))
   ),
 
   -- Function: remove
   -- Removes this node from the parent .Nodes array by calling parent.Nodes.RemoveAt(this.nindex)
   fn remove = (
-    parent.Nodes.RemoveAt(nindex)
+    if classof(this.parent) == WTreeNode then (parent.tnode.Nodes.RemoveAt(nindex)) else (parent.tnode.Nodes.RemoveAt(nindex))
   ),
 
   -- Function: processSubs
@@ -52,7 +52,7 @@ struct 	WTreeNode (
   fn processSubs = (
     for i=1 to subNodes.count do (
       snode = subNodes[i]
-      snode.parent = this.tnode
+      snode.parent = this
       snode.init()
       snode.add()
     )
