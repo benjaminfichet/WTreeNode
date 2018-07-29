@@ -1,17 +1,5 @@
 
-/* Class: WTreeNode
-
-  A simple but powerful Maxscript wrapper to "System.Windows.Forms.TreeNode"(s).
-  ---code
-  -- Adding a tree composed of 3 nodes to a treeview.
-  t1 = WTreeNode title:"OnOpen node" parent:tv subnodes:#(
-      (WTreeNode title:"Im a subnode" subNodes:#()),
-      (WTreeNode title:"Im another!" subNodes:#())
-    )
-  t1.init() -- recursive inits the tree nodes
-  t1.add()  -- recursive appends them to the ui
-  ---
-*/
+/* Class: WTreeNode */
 struct 	WTreeNode (
 
 
